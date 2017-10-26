@@ -1,0 +1,22 @@
+#!/bin/bash
+
+REMOTE=$1
+TARGET_PATH=$2
+
+if [ -z "$REMOTE" ]; then
+	echo "no REMOTE param."
+	exit 0
+fi
+
+echo "REMOTE: $REMOTE"
+echo "TARGET_PATH: $TARGET_PATH"
+
+CMD=()
+if [ -n "${TARGET_PATH}" ]; then
+	CMD=("cd '${TARGET_PATH}'; bash")
+fi
+
+# MINTTY_OPTS="-h never -w hide"
+MINTTY_OPTS="-h always"
+shell /usr/bin/ssh $REMOTE -t -i ~/.ssh/gongt.me-home "$CMD"
+

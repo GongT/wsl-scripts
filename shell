@@ -1,0 +1,35 @@
+#!/bin/bash
+
+CWD="$(pwd)"
+cd /mnt/c
+
+export PATH="$PATH:/mnt/c/Windows/System32"
+
+if [ -z "${TMP}" ]; then
+	pushd /mnt/c >/dev/null
+	export TMP="$(wslpath -u "$(cmd.exe /C echo %TEMP%)")"
+	popd >/dev/null
+fi
+
+if [ -z "${ONE_DRIVE_PATH}" ]; then
+	export ONE_DRIVE_PATH="$(wslpath -u 'D:\OneDrive\')"
+fi
+
+
+if [ -z "${WSL_ROOT}" ]; then
+	export WSL_ROOT="$(wslpath -u 'D:\OneDrive\软件\FileMenuTools\custom\wsltty')"
+fi
+
+
+set -x
+echo "PWD=`pwd`"
+"${WSL_ROOT}/bin/mintty.exe" --wsl -t "BASH @ Windows" \
+	--config "${WSL_ROOT}/home/gongt/.minttyrc" \
+	${MINTTY_OPTS} \
+	/bin/wslbridge -t \
+	-C "$CWD" \
+	-e TMP \
+	-e WSL_ROOT \
+	-e ONE_DRIVE_PATH \
+	"$@"
+
